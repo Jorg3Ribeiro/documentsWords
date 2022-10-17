@@ -3,31 +3,44 @@ services:
   webclient:
     container_name: documentclient
     build: ./client
+    networks:
+      - interna_sh
     ports:
-    - 5000:3000
+      - 5000:3000
     depends_on:
-    - server
+      - server
 
   server:
     container_name: documentserver
     build: ./server
+    networks:
+      - interna_sh
     ports:
-    - 3001:3001
+      - 3001:3001
     links:
-    - database
+      - database
   
   database:
     image: mongo
     restart: always
+    networks:
+      - interna_sh
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
   
   mongo-express:
     image: mongo-express
+    networks:
+      - interna_sh
     ports:
       - 8081:8081
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
       ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+  
+  
+  networks:
+    interna_sh:
+      driver: overlay
