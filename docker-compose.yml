@@ -1,30 +1,36 @@
 version: '3.3'
 services:
   webclient:
-    container_name: documentclient
-    build: ./client
+    image: doc-cliente:latest
     ports:
       - 5000:3000
+    networks:
+      - interna
     depends_on:
       - server
 
   server:
-    container_name: documentserver
-    build: ./server
+    image: doc-server:latest
     ports:
       - 3001:3001
+    networks:
+      - interna
     links:
       - database
   
   database:
     image: mongo
     restart: always
+    networks:
+      - interna
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
   
   mongo-express:
     image: mongo-express
+    networks:
+      - interna
     ports:
       - 8081:8081
     environment:
@@ -34,5 +40,5 @@ services:
   
   
   networks:
-    interna_sh:
+    interna:
       driver: overlay
